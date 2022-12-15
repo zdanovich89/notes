@@ -1,0 +1,28 @@
+name: $(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
+
+
+
+trigger:
+  - none
+
+stages:  
+
+  - stage: generate_notes
+    jobs:
+      - job:
+        displayName: generate notes
+        steps:
+          - task: GenerateReleaseNotes@0
+            inputs:
+              FromBuildId: "$(Build.BuildId)"
+              ToBuildId: "8bd7ba7c"
+              ReleaseNotesPath: "GeneratedNotes"
+              ReleaseNotesFile: "ReleaseNotes.md"
+              Test: false
+
+          - task: PublishPipelineArtifact@1
+            inputs:
+              targetPath: "/home/vsts/work/1/s/GeneratedNotes/"
+              artifact: "notes"
+              publishLocation: "pipeline"
+
